@@ -1,4 +1,4 @@
-FROM debian:stretch-20181011-slim
+FROM debian:stretch-20181011
 
 
 RUN mkdir /opt/tmp /opt/src
@@ -61,7 +61,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libtinfo5 \
     libtinfo-dev \
     libncurses5 \
-    libncurses5-dev &&\
+    libncurses5-dev \
+    libgflags2v5 \
+    librocksdb4.5 \ 
+    libsnappy1v5 \
+    librocksdb-dev &&\
     apt-get -y autoremove && apt-get -y clean &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
