@@ -61,7 +61,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libtinfo5 \
     libtinfo-dev \
     libncurses5 \
-    libncurses5-dev \
+    libncurses5-dev &&\
     apt-get -y autoremove && apt-get -y clean &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
