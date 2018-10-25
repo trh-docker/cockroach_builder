@@ -56,6 +56,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python \
     texinfo \
     unzip \
+    zip \
     xz-utils \
     yarn \
     libtinfo5 \
