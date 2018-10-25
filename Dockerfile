@@ -7,7 +7,7 @@ ENV GOPATH=/opt/src/ \
     PATH=/opt/go/bin:$PATH \
     GO_VERSION=1.11.1
 # https://dl.google.com/go/go1.11.1.linux-amd64.tar.gz
-ADD https://dl.google.com/go//go${GO_VERSION}.linux-amd64.tar.gz /opt/tmp/
+ADD https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz /opt/tmp/
 ADD ./files/dep-linux-amd64 /opt/tmp/dep
 
 RUN apt-get update && apt-get install -y unzip curl git &&\
