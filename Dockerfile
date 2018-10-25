@@ -1,21 +1,39 @@
-FROM quay.io/spivegin/golangnodesj
+FROM debian:stretch-20181011-slim
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gnupg2 \
-    apt-transport-https \
-    ca-certificates \
-    curl
+
+RUN mkdir /opt/tmp /opt/src
+ENV GOPATH=/opt/src/ \
+    GOBIN=/opt/go/bin \
+    PATH=/opt/go/bin:$PATH \
+    GO_VERSION=1.11.1
+
+ADD https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz /opt/tmp/
+ADD ./files/dep-linux-amd64 /opt/tmp/dep
+
+RUN apt-get update && apt-get install -y unzip curl git &&\
+    tar -C /opt/ -xzf /opt/tmp/go${GO_VERSION}.linux-amd64.tar.gz &&\
+    mv /opt/tmp/dep /opt/go/bin/dep &&\
+    chmod +x /opt/go/bin/* &&\
+    ln -s /opt/go/bin/* /bin/ &&\
+    rm /opt/tmp/go${GO_VERSION}.linux-amd64.tar.gz &&\
+    apt-get autoclean && apt-get autoremove &&\
+    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
+RUN apt-get update && apt-get install -y --no-install-recommends gcc gnupg2        tar git curl wget apt-transport-https ca-certificates build-essential &&\
+    apt-get autoclean && apt-get autoremove &&\
+    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
+RUN curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add && echo 'deb https://deb.nodesource.com/node_8.x stretch main' > /etc/apt/sources.list.d/nodesource.list && echo 'deb-src https://deb.nodesource.com/node_8.x stretch main' >> /etc/apt/sources.list.d/nodesource.list &&\
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - &&\
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list &&\
+    apt-get update && apt-get install -y nodejs yarn &&\
+    apt-get autoclean && apt-get autoremove &&\
+    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 RUN curl -fsSL -O https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64.deb \
     && dpkg -i dumb-init_1.2.0_amd64.deb && rm dumb-init_1.2.0_amd64.deb
 
 # CMD ["/usr/bin/dumb-init", "--"]
-
-RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
-    && echo 'deb https://deb.nodesource.com/node_8.x stretch main' | tee /etc/apt/sources.list.d/nodesource.list \
-    && curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-    && echo 'deb https://dl.yarnpkg.com/debian/ stable main' | tee /etc/apt/sources.list.d/yarn.list
-
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     autoconf \
@@ -43,7 +61,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libtinfo-dev \
     libncurses5 \
     libncurses5-dev \
-    build-essential &&\
     apt-get -y autoremove && apt-get -y clean &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
