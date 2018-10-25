@@ -1,4 +1,4 @@
-FROM quay.io/spivegin/bazel
+FROM quay.io/spivegin/golangbase
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
