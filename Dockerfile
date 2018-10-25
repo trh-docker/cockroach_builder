@@ -5,10 +5,11 @@ RUN mkdir /opt/tmp /opt/src
 ENV GOPATH=/opt/src/ \
     GOBIN=/opt/go/bin \
     PATH=/opt/go/bin:$PATH \
-    GO_VERSION=1.11.1
+    GO_VERSION=1.11.1 \
+    DEP_VERSION=0.5.0
 # https://dl.google.com/go/go1.11.1.linux-amd64.tar.gz
 ADD https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz /opt/tmp/
-ADD ./files/dep-linux-amd64 /opt/tmp/dep
+ADD https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 /opt/tmp/dep
 
 RUN apt-get update && apt-get install -y unzip curl git &&\
     tar -C /opt/ -xzf /opt/tmp/go${GO_VERSION}.linux-amd64.tar.gz &&\
