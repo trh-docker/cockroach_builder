@@ -27,8 +27,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     flex \
     g++ \
     gawk \
-    git \
-    golang \
     gperf \
     help2man \
     iptables \
