@@ -1,5 +1,4 @@
-FROM quay.io/spivegin/bazel
-
+FROM ubuntu:xenial-20170214
 RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
     ca-certificates \
