@@ -45,7 +45,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libtinfo-dev \
     libncurses5 \
     libncurses5-dev \
-    build-essential 
+    build-essential &&\
+    apt-get -y autoremove && apt-get -y clean &&\
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # autoconf - crosstool-ng/bootstrap
 # bison - crosstool-ng/configure
@@ -79,4 +81,6 @@ RUN mkdir crosstool-ng \
     && make install \
     && cp ct-ng.comp /etc/bash_completion.d/ \
     && cd .. \
-    && rm -rf crosstool-ng
+    && rm -rf crosstool-ng &&\
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
