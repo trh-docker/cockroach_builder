@@ -12,7 +12,7 @@ RUN curl -fsSL -O https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dum
 # CMD ["/usr/bin/dumb-init", "--"]
 
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
-    && echo 'deb https://deb.nodesource.com/node_6.x xenial main' | tee /etc/apt/sources.list.d/nodesource.list \
+    && echo 'deb https://deb.nodesource.com/node_8.x stretch main' | tee /etc/apt/sources.list.d/nodesource.list \
     && curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo 'deb https://dl.yarnpkg.com/debian/ stable main' | tee /etc/apt/sources.list.d/yarn.list
 
@@ -32,7 +32,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gperf \
     help2man \
     iptables \
-    libncurses-dev \
     make \
     nodejs \
     openssh-client \
@@ -41,7 +40,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     texinfo \
     unzip \
     xz-utils \
-    yarn
+    yarn \
+    libtinfo5 \
+    libtinfo-dev \
+    libncurses5 \
+    libncurses5-dev \
+    build-essential 
+
 # autoconf - crosstool-ng/bootstrap
 # bison - crosstool-ng/configure
 # bzip2 - crosstool-ng/configure
