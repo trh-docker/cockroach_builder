@@ -1,4 +1,5 @@
-FROM ubuntu:xenial-20170214
+FROM quay.io/spivegin/bazel
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
     ca-certificates \
@@ -73,59 +74,3 @@ RUN mkdir crosstool-ng \
     && cp ct-ng.comp /etc/bash_completion.d/ \
     && cd .. \
     && rm -rf crosstool-ng
-
-COPY x86_64-unknown-linux-gnu.defconfig x86_64-unknown-linux-musl.defconfig x86_64-w64-mingw.defconfig ./
-RUN mkdir build src && cd build \
-    && rm -rf * && DEFCONFIG=../x86_64-unknown-linux-gnu.defconfig  /usr/local/ct-ng/bin/ct-ng defconfig && /usr/local/ct-ng/bin/ct-ng build \
-    && rm -rf * && DEFCONFIG=../x86_64-unknown-linux-musl.defconfig /usr/local/ct-ng/bin/ct-ng defconfig && /usr/local/ct-ng/bin/ct-ng build \
-    && rm -rf * && DEFCONFIG=../x86_64-w64-mingw.defconfig          /usr/local/ct-ng/bin/ct-ng defconfig && /usr/local/ct-ng/bin/ct-ng build \
-    && cd .. \
-    && rm -rf build src
-
-RUN apt-get autoremove -y gcc g++
-
-# Build an msan-enabled build of libc++, following instructions from
-# https://github.com/google/sanitizers/wiki/MemorySanitizerLibcxxHowTo
-RUN mkdir llvm                    && curl -sfSL http://releases.llvm.org/3.9.1/llvm-3.9.1.src.tar.xz      | tar --strip-components=1 -C llvm -xJ \
-    && mkdir llvm/projects/libcxx    && curl -sfSL http://releases.llvm.org/3.9.1/libcxx-3.9.1.src.tar.xz    | tar --strip-components=1 -C llvm/projects/libcxx -xJ \
-    && mkdir llvm/projects/libcxxabi && curl -sfSL http://releases.llvm.org/3.9.1/libcxxabi-3.9.1.src.tar.xz | tar --strip-components=1 -C llvm/projects/libcxxabi -xJ \
-    && curl -fsSL https://github.com/llvm-mirror/libcxx/commit/b640da0b315ead39690d4d65c76938ab8aeb5449.patch | git -C llvm/projects/libcxx apply \
-    && mkdir libcxx_msan && (cd libcxx_msan && cmake ../llvm -DCMAKE_BUILD_TYPE=Release -DLLVM_USE_SANITIZER=Memory && make cxx -j$(nproc))
-
-RUN git clone --depth 1 https://github.com/tpoechtrager/osxcross.git \
-    && (cd osxcross/tarballs && curl -sfSL https://s3.amazonaws.com/andrew-osx-sdks/MacOSX10.9.sdk.tar.xz -O) \
-    && OSX_VERSION_MIN=10.9 PORTABLE=1 UNATTENDED=1 osxcross/build.sh \
-    && mv osxcross/target /x-tools/x86_64-apple-darwin13 \
-    && rm -rf osxcross
-
-# BEGIN https://github.com/docker-library/golang/blob/master/1.8/alpine/Dockerfile
-
-COPY parallelbuilds-go1.8.patch /
-RUN curl -fsSL https://storage.googleapis.com/golang/go1.8.3.src.tar.gz -o golang.tar.gz \
-    && echo '5f5dea2447e7dcfdc50fa6b94c512e58bfba5673c039259fd843f68829d99fa6  golang.tar.gz' | sha256sum -c - \
-    && tar -C /usr/local -xzf golang.tar.gz \
-    && rm golang.tar.gz \
-    && cd /usr/local/go/src \
-    && patch -p2 -i /parallelbuilds-go1.8.patch \
-    && GOROOT_BOOTSTRAP=$(go env GOROOT) CC=clang CXX=clang++ ./make.bash \
-    && rm -rf /*.patch \
-    && apt-get autoremove -y golang
-
-ENV GOPATH /go
-ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
-
-RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
-WORKDIR $GOPATH
-
-# END https://github.com/docker-library/golang/blob/master/1.8/alpine/Dockerfile
-
-RUN chmod -R a+w $(go env GOTOOLDIR)
-
-# Allow Go support files in gdb.
-RUN echo "add-auto-load-safe-path $(go env GOROOT)/src/runtime/runtime-gdb.py" > ~/.gdbinit
-
-RUN curl -fsSL https://releases.hashicorp.com/terraform/0.8.7/terraform_0.8.7_linux_amd64.zip -o terraform.zip \
-    && unzip -d /usr/local/bin terraform.zip \
-    && rm terraform.zip
-
-ENV PATH /opt/backtrace/bin:$PATH
