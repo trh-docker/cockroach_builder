@@ -1,6 +1,7 @@
 FROM quay.io/spivegin/golangbase
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    gnupg2 \
     apt-transport-https \
     ca-certificates \
     curl
@@ -8,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl -fsSL -O https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64.deb \
     && dpkg -i dumb-init_1.2.0_amd64.deb && rm dumb-init_1.2.0_amd64.deb
 
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+# CMD ["/usr/bin/dumb-init", "--"]
 
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
     && echo 'deb https://deb.nodesource.com/node_6.x xenial main' | tee /etc/apt/sources.list.d/nodesource.list \
