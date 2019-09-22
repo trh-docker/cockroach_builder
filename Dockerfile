@@ -12,7 +12,6 @@ ADD https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz /opt/tmp/
 
 RUN apt-get update && apt-get install -y unzip curl git &&\
     tar -C /opt/ -xzf /opt/tmp/go${GO_VERSION}.linux-amd64.tar.gz &&\
-    mv /opt/tmp/dep /opt/go/bin/dep &&\
     chmod +x /opt/go/bin/* &&\
     ln -s /opt/go/bin/* /bin/ &&\
     rm /opt/tmp/go${GO_VERSION}.linux-amd64.tar.gz &&\
