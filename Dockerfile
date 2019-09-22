@@ -66,6 +66,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgflags2v5 \
     librocksdb4.5 \ 
     libsnappy1v5 \
+    gnutls-bin \
     librocksdb-dev &&\
     apt-get -y autoremove && apt-get -y clean &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
