@@ -1,15 +1,14 @@
-FROM debian:stretch-20181011
+FROM debian:stretch
 
 
 RUN mkdir /opt/tmp /opt/src
 ENV GOPATH=/opt/src/ \
     GOBIN=/opt/go/bin \
     PATH=/opt/go/bin:$PATH \
-    GO_VERSION=1.11.1 \
-    DEP_VERSION=0.5.0
+    GO_VERSION=1.13 \
+    NODE_VER=10
 # https://dl.google.com/go/go1.11.1.linux-amd64.tar.gz
 ADD https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz /opt/tmp/
-ADD https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 /opt/tmp/dep
 
 RUN apt-get update && apt-get install -y unzip curl git &&\
     tar -C /opt/ -xzf /opt/tmp/go${GO_VERSION}.linux-amd64.tar.gz &&\
@@ -20,11 +19,11 @@ RUN apt-get update && apt-get install -y unzip curl git &&\
     apt-get autoclean && apt-get autoremove &&\
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
-RUN apt-get update && apt-get install -y --no-install-recommends gcc gnupg2        tar git curl wget apt-transport-https ca-certificates build-essential &&\
+RUN apt-get update && apt-get install -y --no-install-recommends gcc gnupg2 tar git curl wget apt-transport-https ca-certificates build-essential &&\
     apt-get autoclean && apt-get autoremove &&\
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
-RUN curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add && echo 'deb https://deb.nodesource.com/node_8.x stretch main' > /etc/apt/sources.list.d/nodesource.list && echo 'deb-src https://deb.nodesource.com/node_8.x stretch main' >> /etc/apt/sources.list.d/nodesource.list &&\
+RUN curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add && echo 'deb https://deb.nodesource.com/node_${NODE_VER}.x stretch main' > /etc/apt/sources.list.d/nodesource.list && echo 'deb-src https://deb.nodesource.com/node_${NODE_VER}.x stretch main' >> /etc/apt/sources.list.d/nodesource.list &&\
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - &&\
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list &&\
     apt-get update && apt-get install -y nodejs yarn &&\
