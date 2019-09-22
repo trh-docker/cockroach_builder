@@ -5,7 +5,10 @@ RUN mkdir /opt/tmp /opt/src
 ENV GOPATH=/opt/src/ \
     GOBIN=/opt/go/bin \
     PATH=/opt/go/bin:$PATH \
-    GO_VERSION=1.13 
+    GO_VERSION=1.13 \
+    GOPROXY=default \
+    GOSUMDB=off
+
 # https://dl.google.com/go/go1.11.1.linux-amd64.tar.gz
 ADD https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz /opt/tmp/
 
