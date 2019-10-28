@@ -41,6 +41,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     patch \
     texinfo \
     xz-utils \
+    gnutls-bin \
  && apt-get clean
 
 RUN mkdir crosstool-ng \
