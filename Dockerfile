@@ -203,7 +203,7 @@ RUN apt-get install -y --no-install-recommends golang \
  && cd /usr/local/go/src \
  && GOROOT_BOOTSTRAP=$(go env GOROOT) CC=clang CXX=clang++ ./make.bash
 
-RUN apt-get purge -y gnutls-bin
+RUN apt-get install -y gnutls-bin
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
