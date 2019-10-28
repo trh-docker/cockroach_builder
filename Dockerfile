@@ -41,7 +41,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     patch \
     texinfo \
     xz-utils \
-    gnutls-bin \
  && apt-get clean
 
 RUN mkdir crosstool-ng \
@@ -246,6 +245,7 @@ RUN apt-get install -y --no-install-recommends \
     openssh-client \
     yarn \
     google-chrome-stable \
+    gnutls-bin \
     unzip
 
 # awscli - roachtests
